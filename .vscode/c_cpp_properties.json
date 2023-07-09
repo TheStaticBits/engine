@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux Debug",
+            "includePath": [
+                "${default}"
+            ],
+            "defines": [ "DEBUG_MODE" ],
+            "cppStandard": "c++20"
+        },
+        {
+            "name": "Linux Release",
+            "includePath": [
+                "${default}"
+            ],
+            "defines": [],
+            "cppStandard": "c++20"
+        }
+    ],
+    "version": 4
+}
