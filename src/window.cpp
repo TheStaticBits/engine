@@ -109,20 +109,16 @@ void Window::handleWindowEvent(const SDL_Event& event, std::vector<Window*>& win
     // Handles windows coming in and out of focus
     switch (event.window.event) {
     case SDL_WINDOWEVENT_FOCUS_GAINED:
-        logger::info("Window keyboard focused");
         keyFocusedWindow = find(event.window.windowID, windows); // window focused
         break;
     case SDL_WINDOWEVENT_ENTER:
-        logger::info("Window mouse focused");
         mouseFocusedWindow = find(event.window.windowID, windows); // mouse hovered
         break;
         
     case SDL_WINDOWEVENT_FOCUS_LOST:
-        logger::info("Window keyboard unfocused");
         keyFocusedWindow = nullptr; // window unfocused
         break;
     case SDL_WINDOWEVENT_LEAVE:
-        logger::info("Window mouse unfocused");
         mouseFocusedWindow = nullptr; // mouse left window
         break;
         

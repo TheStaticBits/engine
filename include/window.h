@@ -52,9 +52,9 @@ public: // Public methods
     const bool keyPressed(const SDL_Keycode& key) const; // The frame on which the key was pressed
     const bool keyReleased(const SDL_Keycode& key) const; // The frame on which the key was released
 
-    const bool mouseHeld(const uint8_t& key) const;
-    const bool mousePressed(const uint8_t& key) const;
-    const bool mouseReleased(const uint8_t& key) const;
+    const bool mouseHeld(const uint8_t& button) const;
+    const bool mousePressed(const uint8_t& button) const;
+    const bool mouseReleased(const uint8_t& button) const;
 
     inline const Vect<int32_t>& getMousePos() const { return mousePos; }
 
@@ -65,10 +65,9 @@ private: // Private methods
     void updateMousePos();
 
     static void handleWindowEvent(const SDL_Event& event, std::vector<Window*>& windows);
-
-    // interface methods with static methods
-    inline uint32_t getID() const { return SDL_GetWindowID(window); }
     static Window* find(const uint32_t id, std::vector<Window*>& windows);
+
+    inline uint32_t getID() const { return SDL_GetWindowID(window); }
 
 private: // Vars
     static std::vector<SDL_Keycode> allowedKeys; // keys that are tracked
