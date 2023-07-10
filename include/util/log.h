@@ -8,6 +8,7 @@ namespace logger {
     void info(const std::string& message);
     void warn(const std::string& message);
     void error(const std::string& message);
+    void errorThrow(const std::string& message);
     void SDLError(const std::string& message);
     void IMGError(const std::string& message);
     void TTFError(const std::string& message);

@@ -16,21 +16,24 @@ public:
     // HELD represents a key being held for more than 2 frames,
     // PRESSED represents a key being pressed for the first time,
     // RELEASED represents a key being released for the first time.
-    enum KeyState { HELD, PRESSED, RELEASED, NONE };
+    enum KeyState { NONE = 0, HELD = 1, PRESSED = 2, RELEASED = 3 };
 
 public: // Public methods
-    Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync);
+    Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync, const bool outputFPS = false);
     void createSDLWindow(const std::string& title, const bool vsync);
     void destroy();
 
     static void setAllowedKeys(const std::vector<SDL_Keycode>& keys);
 
-    // Call these every frame
-    void presentFrame();
-    void updateInputs();
-    static void handleInputs(std::vector<Window*>& windows); // once per frame no matter the amount of windows
+    // Call these once every frame
+    static void updateMouse();
+    static void updateKeyStates(); // Call this before Window::handleInputs(...)
+    static void handleInputs(std::vector<Window*>& windows);
     static void handleInputs(std::vector<Window>& window);
     static void handleInputs(Window& window); // For single-window applications
+
+    // Call once per frame per window
+    void presentFrame(); // Displays changes to screen
     
     [[nodiscard]] SDL_Texture* loadTexture(const std::string& path);
 
@@ -48,48 +51,49 @@ public: // Public methods
     inline const float getDeltaTime() const { return deltaTime; }
     inline const bool isClosed() const { return closed; }
 
-    const bool keyHeld(const SDL_Keycode& key) const; // If the key is held
-    const bool keyPressed(const SDL_Keycode& key) const; // The frame on which the key was pressed
-    const bool keyReleased(const SDL_Keycode& key) const; // The frame on which the key was released
+    inline const uint32_t getID() const { return SDL_GetWindowID(window); };
+    inline const bool isKeyFocused() const { return this == keyFocusedWindow; }
+    inline const bool isMouseFocused() const { return this == mouseFocusedWindow; }
 
-    const bool mouseHeld(const uint8_t& button) const;
-    const bool mousePressed(const uint8_t& button) const;
-    const bool mouseReleased(const uint8_t& button) const;
+    // Adds key/mouse button if they don't exist
+    static const bool keyHeld(const SDL_Keycode& key); // If the key is held
+    static const bool keyPressed(const SDL_Keycode& key); // The frame on which the key was pressed
+    static const bool keyReleased(const SDL_Keycode& key); // The frame on which the key was released
 
-    inline const Vect<int32_t>& getMousePos() const { return mousePos; }
+    static const bool mouseHeld(const uint8_t& button);
+    static const bool mousePressed(const uint8_t& button);
+    static const bool mouseReleased(const uint8_t& button);
+
+    static inline const Vect<int32_t>& getMousePos() { return mousePos; }
 
 private: // Private methods
-    void updateKeys();
-    void handleKey(const SDL_Keycode& key, const uint32_t type);
-
-    void updateMousePos();
-
+    static void handleKey(const SDL_Keycode& key, const uint32_t type);
     static void handleWindowEvent(const SDL_Event& event, std::vector<Window*>& windows);
-    static Window* find(const uint32_t id, std::vector<Window*>& windows);
+    static Window* find(const uint32_t id, std::vector<Window*>& windows); // Finds window with the given ID
 
-    inline uint32_t getID() const { return SDL_GetWindowID(window); }
-
-private: // Vars
+private: // Variables
+    // Key inputs
+    static std::unordered_map<SDL_Keycode, Window::KeyState> keys; // key states
     static std::vector<SDL_Keycode> allowedKeys; // keys that are tracked
-    const static std::vector<uint8_t> clearColor; // clear color/default draw color
+    const static std::vector<uint8_t> defaultClearColor; // clear color/default draw color
 
-    static Window* keyFocusedWindow;
-    static Window* mouseFocusedWindow;
+    // Mouse
+    static Vect<int32_t> mousePos;
+    static std::unordered_map<uint8_t, Window::KeyState> mouseState;
+
+    // Focused windows
+    static Window* keyFocusedWindow; // Window selected/in primary focus
+    static Window* mouseFocusedWindow; // Mouse hovering over window
 
     SDL_Window* window;
     SDL_Renderer* renderer;
 
     float deltaTime;
     uint64_t lastFrame;
+    const bool outputFPS;
+    std::vector<uint64_t> deltaTimes;
 
     bool closed;
     bool destroyed;
     const Vect<uint32_t> size;
-
-    // Key states
-    std::unordered_map<SDL_Keycode, Window::KeyState> keys;
-
-    // Mouse
-    Vect<int32_t> mousePos;
-    std::unordered_map<uint8_t, Window::KeyState> mouseState;
 };

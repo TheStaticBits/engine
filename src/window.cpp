@@ -9,15 +9,25 @@
 #include "util/log.h"
 #include "texture.h"
 
+// Static variable default definitions:
+// Allows keys
+std::unordered_map<SDL_Keycode, Window::KeyState> Window::keys = {};
 std::vector<SDL_Keycode> Window::allowedKeys = {};
-const std::vector<uint8_t> Window::clearColor = { 0, 0, 0, 255 };
+const std::vector<uint8_t> Window::defaultClearColor = { 0, 0, 0, 255 };
 
+// Mouse
+Vect<int32_t> Window::mousePos = { 0, 0 };
+std::unordered_map<uint8_t, Window::KeyState> Window::mouseState = {}; // SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_BUTTON_MIDDLE
+
+// Focused windows
 Window* Window::keyFocusedWindow = nullptr;
 Window* Window::mouseFocusedWindow = nullptr;
 
-Window::Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync)
+
+Window::Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync, const bool outputFPS)
     : window(nullptr), renderer(nullptr),
-      deltaTime(0), lastFrame(SDL_GetTicks()), closed(false), destroyed(false), size(size)
+      deltaTime(0), lastFrame(SDL_GetTicks()), outputFPS(outputFPS), 
+      closed(false), destroyed(false), size(size)
 {
     createSDLWindow(title, vsync);
 }
@@ -60,14 +70,39 @@ void Window::presentFrame()
 
     // Calculate deltatime (time in seconds since last frame)
     uint64_t currentFrame = SDL_GetTicks64();
+
+    // Print average fps every second
+    if (outputFPS && (currentFrame % 1000) < (lastFrame % 1000))
+    {
+        // add together all deltatimes over the last second
+        float totalDeltaTime = 0;
+        for (const uint64_t frame : deltaTimes) totalDeltaTime += frame;
+        const float fps = static_cast<float>(deltaTimes.size()) / totalDeltaTime;
+        logger::info("FPS: " + std::to_string(fps));
+    }
+
     deltaTime = (currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
 }
 
-void Window::updateInputs()
+void Window::updateKeyStates()
 {
-    updateKeys();
-    updateMousePos();
+    for (auto& key : keys)
+    {
+        if (key.second == PRESSED) key.second = HELD; // Move to HELD state
+        else if (key.second == RELEASED) key.second = NONE; // Move to NONE state
+    }
+}
+
+void Window::updateMouse()
+{
+    SDL_GetMouseState(&mousePos.x, &mousePos.y);
+
+    for (auto& button : mouseState)
+    {
+        if (button.second == PRESSED) button.second = HELD;
+        else if (button.second == RELEASED) button.second = NONE;
+    }
 }
 
 void Window::handleInputs(std::vector<Window*>& windows)
@@ -79,12 +114,12 @@ void Window::handleInputs(std::vector<Window*>& windows)
             handleWindowEvent(event, windows);
 
         else if (event.type == SDL_MOUSEBUTTONDOWN) 
-            keyFocusedWindow->mouseState[event.button.button] = PRESSED;
+            mouseState[event.button.button] = PRESSED;
         else if (event.type == SDL_MOUSEBUTTONUP) 
-            keyFocusedWindow->mouseState[event.button.button] = RELEASED;
+            mouseState[event.button.button] = RELEASED;
         
         else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) 
-            keyFocusedWindow->handleKey(event.key.keysym.sym, event.type);
+            handleKey(event.key.keysym.sym, event.type);
     }
 }
 
@@ -142,15 +177,6 @@ Window* Window::find(const uint32_t id, std::vector<Window*>& windows)
     return windows[0];
 }
 
-void Window::updateKeys()
-{
-    for (auto& key : keys)
-    {
-        if (key.second == PRESSED) key.second = HELD; // Move to HELD state
-        else if (key.second == RELEASED) key.second = NONE; // Move to NONE state
-    }
-}
-
 void Window::handleKey(const SDL_Keycode& key, const uint32_t type)
 {
     if (std::find(allowedKeys.begin(), allowedKeys.end(), key) == allowedKeys.end())
@@ -158,17 +184,6 @@ void Window::handleKey(const SDL_Keycode& key, const uint32_t type)
     
     if (type == SDL_KEYDOWN) keys[key] = PRESSED;
     else if (type == SDL_KEYUP) keys[key] = RELEASED;
-}
-
-void Window::updateMousePos()
-{
-    SDL_GetMouseState(&mousePos.x, &mousePos.y);
-
-    for (auto& button : mouseState)
-    {
-        if (button.second == PRESSED) button.second = HELD;
-        else if (button.second == RELEASED) button.second = NONE;
-    }
 }
 
 [[nodiscard]] SDL_Texture* Window::loadTexture(const std::string& path)
@@ -199,7 +214,7 @@ void Window::setDrawColor(const std::vector<uint8_t>& color)
 
 void Window::resetDrawColor()
 {
-    setDrawColor(clearColor);
+    setDrawColor(defaultClearColor);
 }
 
 void Window::setDrawTarget(Texture& texture)
@@ -212,34 +227,34 @@ void Window::resetDrawTarget()
     SDL_SetRenderTarget(renderer, nullptr);
 }
 
-const bool Window::keyHeld(const SDL_Keycode& key) const
+const bool Window::keyHeld(const SDL_Keycode& key)
 {
-    Window::KeyState state = keys.at(key);
+    const Window::KeyState state = keys[key];
     return state == HELD || state == PRESSED;
 }
 
-const bool Window::keyPressed(const SDL_Keycode& key) const
+const bool Window::keyPressed(const SDL_Keycode& key)
 {
-    return keys.at(key) == PRESSED;
+    return keys[key] == PRESSED;
 }
 
-const bool Window::keyReleased(const SDL_Keycode& key) const
+const bool Window::keyReleased(const SDL_Keycode& key)
 {
-    return keys.at(key) == RELEASED;
+    return keys[key] == RELEASED;
 }
 
-const bool Window::mouseHeld(const uint8_t& button) const
+const bool Window::mouseHeld(const uint8_t& button)
 {
-    Window::KeyState state = mouseState.at(button);
+    Window::KeyState state = mouseState[button];
     return state == HELD || state == PRESSED;
 }
 
-const bool Window::mousePressed(const uint8_t& button) const
+const bool Window::mousePressed(const uint8_t& button)
 {
-    return mouseState.at(button) == PRESSED;
+    return mouseState[button] == PRESSED;
 }
 
-const bool Window::mouseReleased(const uint8_t& button) const
+const bool Window::mouseReleased(const uint8_t& button)
 {
-    return mouseState.at(button) == RELEASED;
+    return mouseState[button] == RELEASED;
 }
