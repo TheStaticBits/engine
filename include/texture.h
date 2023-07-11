@@ -39,8 +39,5 @@ private:
     const Vect<uint32_t> size;
     const Vect<uint32_t> renderSize;
     const Vect<int32_t> position;
-
-#ifdef DEBUG_MODE
     const std::string& path;
-#endif
 };

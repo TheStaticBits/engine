@@ -26,8 +26,9 @@ Window* Window::mouseFocusedWindow = nullptr;
 
 Window::Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync, const bool outputFPS)
     : window(nullptr), renderer(nullptr),
-      deltaTime(0), lastFrame(SDL_GetTicks()), outputFPS(outputFPS), 
-      closed(false), destroyed(false), size(size)
+      closed(false), destroyed(false), size(size),
+      deltaTime(0), lastFrame(SDL_GetTicks()), 
+      outputFPS(outputFPS), FPSCounter(0)
 {
     createSDLWindow(title, vsync);
 }
@@ -70,18 +71,20 @@ void Window::presentFrame()
 
     // Calculate deltatime (time in seconds since last frame)
     uint64_t currentFrame = SDL_GetTicks64();
+    deltaTime = (currentFrame - lastFrame) / 1000.0f;
 
-    // Print average fps every second
-    if (outputFPS && (currentFrame % 1000) < (lastFrame % 1000))
+    if (outputFPS)
     {
-        // add together all deltatimes over the last second
-        float totalDeltaTime = 0;
-        for (const uint64_t frame : deltaTimes) totalDeltaTime += frame;
-        const float fps = static_cast<float>(deltaTimes.size()) / totalDeltaTime;
-        logger::info("FPS: " + std::to_string(fps));
+        FPSCounter++;
+
+        // Every second this happens once, print out FPS every second
+        if ((currentFrame % 1000) < (lastFrame % 1000))
+        {
+            logger::info("FPS: " + std::to_string(FPSCounter));
+            FPSCounter = 0;
+        }
     }
 
-    deltaTime = (currentFrame - lastFrame) / 1000.0f;
     lastFrame = currentFrame;
 }
 

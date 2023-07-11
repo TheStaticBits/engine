@@ -12,11 +12,7 @@ uint32_t Texture::scale = 1; // Default render scale
 Texture::Texture(Window& window, const std::string& path)
     : texture(window.loadTexture(path)),
       size(Texture::getSize(texture).cast<uint32_t>()),
-      renderSize(size * scale)
-    
-#ifdef DEBUG_MODE
-      , path(path)
-#endif
+      renderSize(size * scale), path(path)
 {
     
 }
@@ -24,10 +20,7 @@ Texture::Texture(Window& window, const std::string& path)
 Texture::~Texture()
 {
     SDL_DestroyTexture(texture);
-
-#ifdef DEBUG_MODE
     logger::info("Destroyed texture at " + path);
-#endif
 }
 
 const Vect<int32_t> Texture::getSize(SDL_Texture* texture)

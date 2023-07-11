@@ -88,12 +88,12 @@ private: // Variables
     SDL_Window* window;
     SDL_Renderer* renderer;
 
-    float deltaTime;
-    uint64_t lastFrame;
-    const bool outputFPS;
-    std::vector<uint64_t> deltaTimes;
-
     bool closed;
     bool destroyed;
     const Vect<uint32_t> size;
+
+    float deltaTime;
+    uint64_t lastFrame;
+    const bool outputFPS;
+    uint64_t FPSCounter;
 };
