@@ -26,15 +26,3 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG_MODE") # Debug mode 
 file(GLOB_RECURSE srcFiles CONFIGURE_DEPENDS src/*.cpp) # All source files
 add_library(${PROJECT_NAME} STATIC ${srcFiles}) # Library
 target_include_directories(${PROJECT_NAME} PUBLIC include) # Includes
-
-if (NOT EMSCRIPTEN)
-
-    set(CMAKE_CXX_COMPILER g++)
-
-    find_package(SDL2 REQUIRED)
-    find_package(SDL2_image REQUIRED)
-    find_package(SDL2_ttf REQUIRED)
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf)
-
-endif()
