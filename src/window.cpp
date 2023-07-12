@@ -198,8 +198,8 @@ void Window::handleKey(const SDL_Keycode& key, const uint32_t type)
 
 void Window::render(Texture& texture)
 {
-    SDL_Rect srcRect = texture.getOriginalRect();
-    SDL_Rect dstRect = texture.getRect();
+    SDL_Rect srcRect = texture.getSourceRect();
+    SDL_Rect dstRect = texture.getDestRect();
     SDL_RenderCopy(renderer, texture.getTexture(), &srcRect, &dstRect);
 }
 
