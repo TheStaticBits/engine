@@ -9,18 +9,32 @@
 
 uint32_t Texture::scale = 1; // Default render scale
 
-Texture::Texture(Window& window, const std::string& path)
-    : texture(window.loadTexture(path)), path(path),
-      srcSize(Texture::getSize(texture).cast<uint32_t>()),
-      destSize(srcSize * scale)
+Texture::Texture(Window& window, const std::string& path, const uint32_t overrideScale)
+    : texture(window.loadTexture(path)), path(path)
 {
-    
+    initSizes(overrideScale);
+}
+
+Texture::Texture(SDL_Texture* texture, const uint32_t overrideScale)
+    : texture(texture)
+{
+    initSizes(overrideScale);
 }
 
 Texture::~Texture()
 {
     SDL_DestroyTexture(texture);
     logger::info("Destroyed texture at " + path);
+}
+
+void Texture::initSizes(const uint32_t overrideScale)
+{
+    srcSize = Texture::getSize(texture).cast<uint32_t>();
+    
+    if (overrideScale != 0)
+        destSize = srcSize * overrideScale;
+    else
+        destSize = srcSize * scale;
 }
 
 const Vect<int32_t> Texture::getSize(SDL_Texture* texture)

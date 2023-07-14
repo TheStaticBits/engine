@@ -1,12 +1,15 @@
 #include "window.h"
 
 #include <iostream>
+#include <unordered_map>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "util/vect.h"
 #include "util/log.h"
+#include "util/sdlutil.h"
 #include "texture.h"
 
 // Static variable default definitions:
@@ -189,7 +192,7 @@ void Window::handleKey(const SDL_Keycode& key, const uint32_t type)
     else if (type == SDL_KEYUP) keys[key] = RELEASED;
 }
 
-[[nodiscard]] SDL_Texture* Window::loadTexture(const std::string& path)
+SDL_Texture* Window::loadTexture(const std::string& path)
 {
     SDL_Texture* texture = IMG_LoadTexture(renderer, path.c_str());
     if (texture == nullptr) logger::IMGError("Failed to load texture: " + path);
@@ -228,6 +231,13 @@ void Window::setDrawTarget(Texture& texture)
 void Window::resetDrawTarget()
 {
     SDL_SetRenderTarget(renderer, nullptr);
+}
+
+SDL_Texture* Window::surfToTex(SDL_Surface* surface)
+{
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    return texture;
 }
 
 const bool Window::keyHeld(const SDL_Keycode& key)

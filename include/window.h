@@ -5,6 +5,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "util/vect.h"
 class Texture;
@@ -46,6 +47,9 @@ public: // Public methods
 
     void setDrawTarget(Texture& texture);
     void resetDrawTarget();
+
+    // Other
+    [[nodiscard]] SDL_Texture* surfToTex(SDL_Surface* surface);
 
     // Getters
     inline const float getDeltaTime() const { return deltaTime; }

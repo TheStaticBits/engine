@@ -10,7 +10,8 @@
 class Texture
 {
 public:
-    Texture(Window& window, const std::string& path);
+    Texture(Window& window, const std::string& path, const uint32_t overrideScale=0);
+    Texture(SDL_Texture* texture, const uint32_t overrideScale=0);
 
     Texture(const Texture& other) = delete;
     Texture(Texture&&) = delete;
@@ -18,6 +19,8 @@ public:
     Texture& operator=(Texture&&) = delete;
     
     ~Texture();
+
+    void initSizes(const uint32_t overrideScale);
 
     // Getters
     static inline const uint32_t getScale() { return scale; }
@@ -45,7 +48,7 @@ private:
     static uint32_t scale; // Render scale
 
     SDL_Texture* texture;
-    const std::string& path;
+    const std::string path;
 
     Vect<int32_t> srcPos;
     Vect<uint32_t> srcSize;

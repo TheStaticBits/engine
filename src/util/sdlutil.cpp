@@ -19,3 +19,8 @@ void util::quitSDL()
     IMG_Quit();
     SDL_Quit();
 }
+
+const SDL_Color util::vecToColor(const std::vector<uint8_t>& color)
+{
+    return { color[0], color[1], color[2], color[3] };
+}
