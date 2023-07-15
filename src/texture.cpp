@@ -21,10 +21,41 @@ Texture::Texture(SDL_Texture* texture, const uint32_t overrideScale)
     initSizes(overrideScale);
 }
 
+Texture::Texture()
+    : texture(nullptr)
+{
+    
+}
+
 Texture::~Texture()
 {
+    destroy();
+}
+
+void Texture::destroy()
+{
+    if (texture == nullptr) return;
     SDL_DestroyTexture(texture);
     logger::info("Destroyed texture at " + path);
+}
+
+Texture::Texture(Texture&& other)
+    : texture(other.texture), path(other.path), srcSize(other.srcSize), destSize(other.destSize)
+{
+    other.texture = nullptr;
+}
+
+Texture& Texture::operator=(Texture&& other)
+{
+    destroy();
+
+    texture = other.texture;
+    path = other.path;
+    srcSize = other.srcSize;
+    destSize = other.destSize;
+
+    other.texture = nullptr;
+    return *this;
 }
 
 void Texture::initSizes(const uint32_t overrideScale)

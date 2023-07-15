@@ -12,17 +12,19 @@ class Window;
 class Font
 {
 public:
-    static Font& getFont(const std::string& path, const uint32_t size);
+    static Font* getFont(const std::string& path, const uint32_t size);
 
     // Do not call constructor directly, use getFont() instead
     Font(const std::string& path, const uint32_t size); 
+    
     Font(Font&&);
+    Font& operator=(Font&&);
 
     Font(const Font& other) = delete;
     Font& operator=(const Font&) = delete;
-    Font& operator=(Font&&) = delete;
 
     ~Font();
+    void destroy();
     
     SDL_Texture* loadText(Window& window, const std::string& text, SDL_Color color);
 
@@ -36,6 +38,6 @@ private:
 
     TTF_Font* font;
 
-    const std::string path;
-    const uint32_t size;
+    std::string path;
+    uint32_t size;
 };

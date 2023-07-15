@@ -13,15 +13,15 @@
 std::vector<Font> Font::fonts;
 
 // Prevents duplicate font objects from being created
-Font& Font::getFont(const std::string& path, const uint32_t size)
+Font* Font::getFont(const std::string& path, const uint32_t size)
 {
     for (Font& font : fonts)
         if (font.path == path && font.size == size) 
-            return font;
+            return &font;
 
     // If the font doesn't exist, create it
     fonts.emplace_back(path, size);
-    return fonts.back();
+    return &(fonts.back());
 }
 
 Font::Font(const std::string& path, const uint32_t size)
@@ -35,6 +35,12 @@ Font::Font(const std::string& path, const uint32_t size)
 
 Font::~Font()
 {
+    destroy();
+}
+
+void Font::destroy()
+{
+    if (font == nullptr) return;
     TTF_CloseFont(font);
     logger::info("Destroyed font at " + path + " with size " + std::to_string(size) + " pixels");
 }
@@ -43,6 +49,18 @@ Font::Font(Font&& other)
     : font(other.font), path(other.path), size(other.size)
 {
     other.font = nullptr;
+}
+
+Font& Font::operator=(Font&& other)
+{
+    destroy();
+
+    font = other.font;
+    path = other.path;
+    size = other.size;
+
+    other.font = nullptr;
+    return *this;
 }
 
 SDL_Texture* Font::loadText(Window& window, const std::string& text, SDL_Color color)
