@@ -10,10 +10,18 @@ class Animation
 public:
     Animation(Window& window, const std::string& path, const Vect<uint32_t> frameSize,
               const float delay, const bool loop = true);
+
+    Animation(const Animation&) = delete;
+    Animation& operator=(const Animation&) = delete;
+
+    Animation(Animation&&) = default;
+    Animation& operator=(Animation&&) = default;
     
     void update(Window& window);
     void render(Window& window);
 
+    // Getters
+    inline Texture& getTex() { return texture; }
     inline const bool isFinished() const { return finished; }
     inline void continueAnim() { finished = false; }
 

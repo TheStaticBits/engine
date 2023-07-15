@@ -22,6 +22,8 @@ public:
 public: // Public methods
     Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync, const bool outputFPS = false);
     void createSDLWindow(const std::string& title, const bool vsync);
+
+    ~Window();
     void destroy();
 
     static void setAllowedKeys(const std::vector<SDL_Keycode>& keys);

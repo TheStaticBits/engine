@@ -16,7 +16,7 @@ Texture::Texture(Window& window, const std::string& path, const uint32_t overrid
 }
 
 Texture::Texture(SDL_Texture* texture, const uint32_t overrideScale)
-    : texture(texture)
+    : texture(texture), path("[no path]")
 {
     initSizes(overrideScale);
 }
@@ -36,6 +36,7 @@ void Texture::destroy()
 {
     if (texture == nullptr) return;
     SDL_DestroyTexture(texture);
+    texture = nullptr;
     logger::info("Destroyed texture at " + path);
 }
 

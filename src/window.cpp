@@ -51,6 +51,11 @@ void Window::createSDLWindow(const std::string& title, const bool vsync)
     else resetDrawColor(); // Renderer created successfully, set draw color
 }
 
+Window::~Window()
+{
+    destroy();
+}
+
 void Window::destroy()
 {
     if (destroyed) return;

@@ -13,10 +13,12 @@ class Font
 {
 public:
     static Font* getFont(const std::string& path, const uint32_t size);
+    static void deleteFont(Font* font);
+    static void deleteAll(); // Call before exiting program, or segfault (called in util::quitSDL())
 
     // Do not call constructor directly, use getFont() instead
     Font(const std::string& path, const uint32_t size); 
-    
+
     Font(Font&&);
     Font& operator=(Font&&);
 

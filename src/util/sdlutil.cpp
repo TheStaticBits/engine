@@ -5,6 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "util/log.h"
+#include "font.h"
 
 const bool util::initSDL(const uint32_t SDLFlags, const int IMGFlags)
 {
@@ -15,6 +16,8 @@ const bool util::initSDL(const uint32_t SDLFlags, const int IMGFlags)
 
 void util::quitSDL()
 {
+    Font::deleteAll(); // cleanup
+
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
