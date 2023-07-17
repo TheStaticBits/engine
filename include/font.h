@@ -19,8 +19,8 @@ public:
     // Do not call constructor directly, use getFont() instead
     Font(const std::string& path, const uint32_t size); 
 
-    Font(Font&&);
-    Font& operator=(Font&&);
+    Font(Font&& other);
+    Font& operator=(Font&& other);
 
     Font(const Font& other) = delete;
     Font& operator=(const Font&) = delete;

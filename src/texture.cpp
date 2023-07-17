@@ -1,67 +1,47 @@
 #include "texture.h"
 
 #include <iostream>
+#include <memory>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
 #include "window.h"
 #include "util/log.h"
 
+void SDLTextureDeleter(SDL_Texture* texture)
+{
+    SDL_DestroyTexture(texture);
+    logger::info("Destroyed instance of SDL_Texture");
+}
+
 uint32_t Texture::scale = 1; // Default render scale
 
 Texture::Texture(Window& window, const std::string& path, const uint32_t overrideScale)
-    : texture(window.loadTexture(path)), path(path)
+    : texture(window.loadTexture(path), SDLTextureDeleter), path(path)
 {
     initSizes(overrideScale);
 }
 
-Texture::Texture(SDL_Texture* texture, const uint32_t overrideScale)
-    : texture(texture), path("[no path]")
+Texture::Texture(SDL_Texture* tex, const uint32_t overrideScale)
+    : texture(tex, SDLTextureDeleter), path("[no path]")
 {
     initSizes(overrideScale);
 }
 
 Texture::Texture()
-    : texture(nullptr)
+    : texture(nullptr), path("[uninitialized]")
 {
     
 }
 
 Texture::~Texture()
 {
-    destroy();
-}
-
-void Texture::destroy()
-{
-    if (texture == nullptr) return;
-    SDL_DestroyTexture(texture);
-    texture = nullptr;
-    logger::info("Destroyed texture at " + path);
-}
-
-Texture::Texture(Texture&& other)
-    : texture(other.texture), path(other.path), srcSize(other.srcSize), destSize(other.destSize)
-{
-    other.texture = nullptr;
-}
-
-Texture& Texture::operator=(Texture&& other)
-{
-    destroy();
-
-    texture = other.texture;
-    path = other.path;
-    srcSize = other.srcSize;
-    destSize = other.destSize;
-
-    other.texture = nullptr;
-    return *this;
+    logger::info("Destroying instance of texture at " + path);
 }
 
 void Texture::initSizes(const uint32_t overrideScale)
 {
-    srcSize = Texture::getSize(texture).cast<uint32_t>();
+    srcSize = Texture::getSize(texture.get()).cast<uint32_t>();
     
     if (overrideScale != 0)
         destSize = srcSize * overrideScale;

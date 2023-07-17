@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory> // shared_ptr
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -11,17 +12,10 @@ class Texture
 {
 public:
     Texture(Window& window, const std::string& path, const uint32_t overrideScale=0);
-    Texture(SDL_Texture* texture, const uint32_t overrideScale=0);
+    Texture(SDL_Texture* tex, const uint32_t overrideScale=0);
     Texture();
 
-    Texture(Texture&&);
-    Texture& operator=(Texture&&);
-
-    Texture(const Texture& other) = delete;
-    Texture& operator=(const Texture&) = delete;
-    
     ~Texture();
-    void destroy();
 
     void initSizes(const uint32_t overrideScale);
 
@@ -31,11 +25,13 @@ public:
     static const Vect<int32_t> getSize(SDL_Texture* texture);
     static const Vect<int32_t> getSize(Texture& texture);
 
-    inline SDL_Texture* getTexture() const { return texture; }
+    inline SDL_Texture* getTexture() const { return texture.get(); }
+    inline const std::string& getPath() const { return path; }
     inline const Vect<uint32_t>& getDestSize() const { return destSize; }
     inline const Vect<uint32_t>& getSourceSize() const { return srcSize; }
     inline const Vect<int32_t>& getDestPos() const { return destPos; }
     inline const Vect<int32_t>& getSourcePos() const { return srcPos; }
+
     inline const SDL_Rect getDestRect() const { return VectToRect(destPos, destSize); }
     inline const SDL_Rect getSourceRect() const { return VectToRect(srcPos, srcSize); }
     
@@ -50,7 +46,7 @@ public:
 private:
     static uint32_t scale; // Render scale
 
-    SDL_Texture* texture;
+    std::shared_ptr<SDL_Texture> texture;
     std::string path;
 
     Vect<int32_t> srcPos;

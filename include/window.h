@@ -23,6 +23,11 @@ public: // Public methods
     Window(const Vect<uint32_t>& size, const std::string& title, const bool vsync, const bool outputFPS = false);
     void createSDLWindow(const std::string& title, const bool vsync);
 
+    Window(Window&&) = delete;
+    Window& operator=(Window&&) = delete;
+    Window(const Window&) = delete;
+    Window& operator=(const Window&) = delete;
+
     ~Window();
     void destroy();
 
