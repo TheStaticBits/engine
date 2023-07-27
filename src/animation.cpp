@@ -6,15 +6,17 @@
 #include "util/log.h"
 
 Animation::Animation(Window& window, const std::string& path, const Vect<uint32_t> frameSize,
-                     const float delay, const bool loop)
+                     const float delay, const bool loop, const uint32_t frames)
     : texture(window, path), frameSize(frameSize), delay(delay), loop(loop),
-      frame(0), timer(0), finished(false), imgFrameDims(texture.getSourceSize() / frameSize)
+      frame(0), frameCount(frames), timer(0), finished(false), imgFrameDims(texture.getSourceSize() / frameSize)
 {
     if (texture.getSourceSize() % frameSize != Vect<uint32_t>(0, 0))
         logger::warn("Animation at " + path + " - frame size does not divide evenly into texture size");
     
     texture.setSourceSize(frameSize);
     texture.setDestSize(frameSize * Texture::getScale());
+
+    if (frameCount == 0) frameCount = imgFrameDims.x * imgFrameDims.y;
 }
 
 void Animation::update(Window& window)
@@ -34,7 +36,7 @@ void Animation::update(Window& window)
         }
         
         // If the animation is finished
-        if (frame > imgFrameDims.x * imgFrameDims.y) 
+        if (frame >= frameCount) 
         {
             frame = 0;
             finished = true;

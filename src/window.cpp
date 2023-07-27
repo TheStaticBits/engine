@@ -49,6 +49,8 @@ void Window::createSDLWindow(const std::string& title, const bool vsync)
     if (window == nullptr) logger::error("Failed to create window");
     if (renderer == nullptr) logger::error("Failed to create renderer");
     else resetDrawColor(); // Renderer created successfully, set draw color
+
+    logger::info("Successfully created window and renderer");
 }
 
 Window::~Window()

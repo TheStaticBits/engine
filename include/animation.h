@@ -9,7 +9,7 @@ class Animation
 {
 public:
     Animation(Window& window, const std::string& path, const Vect<uint32_t> frameSize,
-              const float delay, const bool loop = true);
+              const float delay, const bool loop = true, const uint32_t frames = 0);
     
     void update(Window& window);
     void render(Window& window);
@@ -27,6 +27,7 @@ private:
     const bool loop;
 
     uint32_t frame;
+    uint32_t frameCount;
     float timer;
     bool finished;
     Vect<uint32_t> imgFrameDims; // amount of times the frame fits into the image vertically and horizontally
