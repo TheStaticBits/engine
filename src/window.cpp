@@ -9,7 +9,7 @@
 
 #include "util/vect.h"
 #include "util/log.h"
-#include "util/sdlutil.h"
+#include "util/util.h"
 #include "texture.h"
 
 // Static variable default definitions:

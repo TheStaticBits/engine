@@ -1,5 +1,6 @@
-#include "util/sdlutil.h"
+#include "util/util.h"
 
+#include <fstream>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -26,4 +27,15 @@ void util::quitSDL()
 const SDL_Color util::vecToColor(const std::vector<uint8_t>& color)
 {
     return { color[0], color[1], color[2], color[3] };
+}
+
+const nlohmann::json util::loadJson(const std::string& path)
+{
+    std::ifstream file(path);
+
+    if (file.is_open())
+        return nlohmann::json::parse(file);
+
+    logger::error("Failed to open JSON file (returning empty JSON): " + path);
+    return nlohmann::json();
 }
