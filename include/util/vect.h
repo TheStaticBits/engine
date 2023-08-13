@@ -57,14 +57,3 @@ struct Vect
     const bool operator>(const T& other) const { return x > other && y > other; }
     const bool operator<(const T& other) const { return x < other && y < other; }
 };
-
-template <class T, class U>
-inline const SDL_Rect VectToRect(const Vect<T>& position, const Vect<U>& size)
-{
-    SDL_Rect rect;
-    rect.x = static_cast<int>(position.x);
-    rect.y = static_cast<int>(position.y);
-    rect.w = static_cast<int>(size.x);
-    rect.h = static_cast<int>(size.y);
-    return rect;
-}

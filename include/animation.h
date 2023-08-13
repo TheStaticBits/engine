@@ -9,7 +9,7 @@ class Animation
 {
 public:
     Animation(Window& window, const std::string& path, const Vect<uint32_t> frameSize,
-              const float delay, const bool loop = true, const uint32_t frames = 0);
+              const float delay, const bool loop=true, const uint32_t frames=0);
     
     void update(Window& window);
     void render(Window& window);

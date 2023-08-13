@@ -7,6 +7,7 @@
 
 #include "window.h"
 #include "util/vect.h"
+#include "util/util.h"
 
 class Texture
 {
@@ -32,8 +33,8 @@ public:
     inline const Vect<int32_t>& getDestPos() const { return destPos; }
     inline const Vect<int32_t>& getSourcePos() const { return srcPos; }
 
-    inline const SDL_Rect getDestRect() const { return VectToRect(destPos, destSize); }
-    inline const SDL_Rect getSourceRect() const { return VectToRect(srcPos, srcSize); }
+    inline const SDL_Rect getDestRect() const { return util::vectToRect(destPos, destSize); }
+    inline const SDL_Rect getSourceRect() const { return util::vectToRect(srcPos, srcSize); }
     
     // Setters
     static void setScale(const uint32_t scale);

@@ -28,7 +28,7 @@
         {
             "name": "Emscripten Release",
             "includePath": [
-                "${default}"
+                "${default}",
                 "~/.emsdk/upstream/emscripten/system/include"
             ],
             "defines": [ "__EMSCRIPTEN__" ],

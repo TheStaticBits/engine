@@ -3,10 +3,10 @@
         {
             "label": "C++ Build",
             "type": "cppbuild",
-            "command": "make",
-            "args": [ "-j8" ],
+            "command": "bash",
+            "args": [ "makeall.sh" ],
             "options": {
-                "cwd": "${workspaceFolder}/bin/debug"
+                "cwd": "${workspaceFolder}"
             },
             "problemMatcher": [
                 "$gcc"
@@ -15,26 +15,10 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "[Debug] Build from makefile",
+            "detail": "Build all",
             "dependsOn": [ 
                 "C++ Build Release"
             ]
-        },
-        {
-            "label": "C++ Build Release",
-            "type": "cppbuild",
-            "command": "make",
-            "args": [ "-j8" ],
-            "options": {
-                "cwd": "${workspaceFolder}/bin/release"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": {
-                "kind": "build"
-            },
-            "detail": "[Release] Build from makefile"
         }
     ],
     "version": "2.0.0"
