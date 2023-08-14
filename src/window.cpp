@@ -98,15 +98,6 @@ void Window::presentFrame()
     lastFrame = currentFrame;
 }
 
-void Window::updateKeyStates()
-{
-    for (auto& key : keys)
-    {
-        if (key.second == PRESSED) key.second = HELD; // Move to HELD state
-        else if (key.second == RELEASED) key.second = NONE; // Move to NONE state
-    }
-}
-
 void Window::updateMouse()
 {
     SDL_GetMouseState(&mousePos.x, &mousePos.y);
@@ -115,6 +106,15 @@ void Window::updateMouse()
     {
         if (button.second == PRESSED) button.second = HELD;
         else if (button.second == RELEASED) button.second = NONE;
+    }
+}
+
+void Window::updateKeyStates()
+{
+    for (auto& key : keys)
+    {
+        if (key.second == PRESSED) key.second = HELD; // Move to HELD state
+        else if (key.second == RELEASED) key.second = NONE; // Move to NONE state
     }
 }
 
