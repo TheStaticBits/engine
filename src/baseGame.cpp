@@ -38,7 +38,7 @@ void BaseGame::destroy()
 
 void BaseGame::start()
 {
-    logger::info("Starting game loop:");
+    logger::info("Starting game loop");
 
 #ifdef __EMSCRIPTEN__
     logger::info("Emscripten setup");
