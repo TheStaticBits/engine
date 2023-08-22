@@ -36,7 +36,7 @@ const nlohmann::json util::loadJson(const std::string& path)
     if (file.is_open())
     {
         logger::info("Successfully loaded " + path);
-        return nlohmann::json::parse(file);
+        return nlohmann::json::parse(file, nullptr, true, true); // Allow comments
     }
 
     logger::error("Failed to open JSON file (returning empty JSON): " + path);
