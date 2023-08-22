@@ -1,5 +1,5 @@
 #!/bin/bash
-rm -r bin
+rm -rf bin
 
 # Create bin, debug, and release folders
 mkdir bin
