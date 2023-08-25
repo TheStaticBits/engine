@@ -49,10 +49,19 @@ void Texture::initSizes(const uint32_t overrideScale)
         destSize = srcSize * scale;
 }
 
+void Texture::modColor(const std::vector<uint8_t>& color)
+{
+    if (SDL_SetTextureColorMod(texture.get(), color[0], color[1], color[2]) != 0)
+        logger::error("Failed to set texture color mod");
+}
+
 const Vect<int32_t> Texture::getSize(SDL_Texture* texture)
 {
     Vect<int32_t> size;
-    SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
+    
+    if (SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y) != 0)
+        logger::error("Failed to query for texture size");
+
     return size.cast<int32_t>();
 }
 

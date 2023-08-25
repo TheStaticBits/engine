@@ -16,7 +16,7 @@
 // Allows keys
 std::unordered_map<SDL_Keycode, Window::KeyState> Window::keys = {};
 std::vector<SDL_Keycode> Window::allowedKeys = {};
-const std::vector<uint8_t> Window::defaultClearColor = { 0, 0, 0, 255 };
+std::vector<uint8_t> Window::clearColor = { 0, 0, 0, 255 };
 
 // Mouse
 Vect<int32_t> Window::mousePos = { 0, 0 };
@@ -72,6 +72,11 @@ void Window::destroy()
 void Window::setAllowedKeys(const std::vector<SDL_Keycode>& keys)
 {
     Window::allowedKeys = keys;
+}
+
+void Window::setClearColor(const std::vector<uint8_t>& color)
+{
+    Window::clearColor = color;
 }
 
 void Window::presentFrame()
@@ -227,7 +232,7 @@ void Window::setDrawColor(const std::vector<uint8_t>& color)
 
 void Window::resetDrawColor()
 {
-    setDrawColor(defaultClearColor);
+    setDrawColor(clearColor);
 }
 
 void Window::setDrawTarget(Texture& texture)

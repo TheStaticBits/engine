@@ -27,13 +27,20 @@ namespace util
         return rect;
     }
 
-    template <class T, class U, class G>
-    inline const bool collidePoint(const Vect<T>& point, const Vect<U>& pos, const Vect<G>& size)
+    template <class T>
+    inline const std::vector<T> jsonToVector(const nlohmann::json& json)
     {
-        return (point.x >= pos.x &&
-                point.x <= pos.x + size.x &&
-                point.y >= pos.y &&
-                point.y <= pos.y + size.y);
+        std::vector<T> result;
+        for (const auto& element : json)
+            result.push_back(element.get<T>());
+        return result;
+    }
+
+    template <class T>
+    inline const bool collidePoint(const Vect<T>& point, const SDL_Rect rect)
+    {
+        return (point.x >= rect.x && point.x <= rect.x + rect.w &&
+                point.y >= rect.y && point.y <= rect.y + rect.h);
     }
 
     inline const bool collideRect(const SDL_Rect& rect1, const SDL_Rect& rect2)

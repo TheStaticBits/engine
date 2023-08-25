@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory> // shared_ptr
+#include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -19,6 +20,8 @@ public:
     ~Texture();
 
     void initSizes(const uint32_t overrideScale);
+
+    void modColor(const std::vector<uint8_t>& color);
 
     // Getters
     static inline const uint32_t getScale() { return scale; }

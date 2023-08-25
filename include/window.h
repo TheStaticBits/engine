@@ -31,7 +31,9 @@ public: // Public methods
     ~Window();
     void destroy();
 
+    // Static setters to customize some aspects of the windows
     static void setAllowedKeys(const std::vector<SDL_Keycode>& keys);
+    static void setClearColor(const std::vector<uint8_t>& color);
 
     // Call these once every frame
     static void updateMouse();
@@ -86,7 +88,7 @@ private: // Variables
     // Key inputs
     static std::unordered_map<SDL_Keycode, Window::KeyState> keys; // key states
     static std::vector<SDL_Keycode> allowedKeys; // keys that are tracked
-    const static std::vector<uint8_t> defaultClearColor; // clear color/default draw color
+    static std::vector<uint8_t> clearColor;
 
     // Mouse
     static Vect<int32_t> mousePos;
