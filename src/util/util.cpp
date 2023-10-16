@@ -17,7 +17,7 @@ const bool util::initSDL(const uint32_t SDLFlags, const int IMGFlags)
 
 void util::quitSDL()
 {
-    Font::deleteAll(); // cleanup
+    Font::destroyAll(); // cleanup
 
     TTF_Quit();
     IMG_Quit();

@@ -14,10 +14,11 @@ void SDLTextureDeleter(SDL_Texture* texture)
     logger::info("Destroyed instance of SDL_Texture");
 }
 
+std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> Texture::textures = {};
 uint32_t Texture::scale = 1; // Default render scale
 
-Texture::Texture(Window& window, const std::string& path, const uint32_t overrideScale)
-    : texture(window.loadTexture(path), SDLTextureDeleter), path(path)
+Texture::Texture(Window& window, const std::string& path, const uint32_t overrideScale, const bool shared)
+    : texture(getImage(window, path, shared)), path(path)
 {
     initSizes(overrideScale);
 }
@@ -37,6 +38,22 @@ Texture::Texture()
 Texture::~Texture()
 {
     logger::info("Destroying instance of texture at " + path);
+}
+
+const std::shared_ptr<SDL_Texture> Texture::getImage(Window& window, const std::string& path, const bool shared)
+{
+    if (!shared) return loadImage(window, path);
+
+    // If the texture has not been created already, load it
+    if (textures.find(path) == textures.end())
+        textures[path] = loadImage(window, path);
+    
+    return textures.at(path);
+}
+
+const std::shared_ptr<SDL_Texture> Texture::loadImage(Window& window, const std::string& path)
+{
+    return std::shared_ptr<SDL_Texture>(window.loadTexture(path), SDLTextureDeleter);
 }
 
 void Texture::initSizes(const uint32_t overrideScale)

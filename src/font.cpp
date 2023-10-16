@@ -24,7 +24,7 @@ Font* Font::getFont(const std::string& path, const uint32_t size)
     return &(fonts.back());
 }
 
-void Font::deleteFont(Font* font)
+void Font::destroyFont(Font* font)
 {
     for (auto it = fonts.begin(); it != fonts.end(); ++it)
         if (&(*it) == font)
@@ -36,7 +36,7 @@ void Font::deleteFont(Font* font)
     logger::warn("Failed to delete font at " + font->getPath() + " with size " + std::to_string(font->getSize()) + " pixels");
 }
 
-void Font::deleteAll()
+void Font::destroyAll()
 {
     fonts.clear();
 }

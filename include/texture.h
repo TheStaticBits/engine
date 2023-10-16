@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory> // shared_ptr
+#include <unordered_map>
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -13,11 +14,14 @@
 class Texture
 {
 public:
-    Texture(Window& window, const std::string& path, const uint32_t overrideScale=0);
+    Texture(Window& window, const std::string& path, const uint32_t overrideScale=0, const bool shared=true);
     Texture(SDL_Texture* tex, const uint32_t overrideScale=0);
     Texture();
 
     ~Texture();
+
+    const std::shared_ptr<SDL_Texture> getImage(Window& window, const std::string& path, const bool shared);
+    const std::shared_ptr<SDL_Texture> loadImage(Window& window, const std::string& path);
 
     void initSizes(const uint32_t overrideScale);
 
@@ -49,6 +53,8 @@ public:
 
 private:
     static uint32_t scale; // Render scale
+
+    static std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> textures;
 
     std::shared_ptr<SDL_Texture> texture;
     std::string path;
