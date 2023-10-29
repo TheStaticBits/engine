@@ -35,10 +35,10 @@ public:
 
     inline SDL_Texture* getTexture() const { return texture.get(); }
     inline const std::string& getPath() const { return path; }
-    inline const Vect<uint32_t>& getDestSize() const { return destSize; }
-    inline const Vect<uint32_t>& getSourceSize() const { return srcSize; }
-    inline const Vect<int32_t>& getDestPos() const { return destPos; }
-    inline const Vect<int32_t>& getSourcePos() const { return srcPos; }
+    inline Vect<uint32_t>& getDestSize() { return destSize; }
+    inline Vect<uint32_t>& getSourceSize() { return srcSize; }
+    inline Vect<int32_t>& getDestPos() { return destPos; }
+    inline Vect<int32_t>& getSourcePos() { return srcPos; }
 
     inline const SDL_Rect getDestRect() const { return util::vectToRect(destPos, destSize); }
     inline const SDL_Rect getSourceRect() const { return util::vectToRect(srcPos, srcSize); }
