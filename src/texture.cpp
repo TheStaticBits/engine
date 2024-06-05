@@ -59,11 +59,15 @@ const std::shared_ptr<SDL_Texture> Texture::loadImage(Window& window, const std:
 void Texture::initSizes(const uint32_t overrideScale)
 {
     srcSize = Texture::getSize(texture.get()).cast<uint32_t>();
-    
+    destSize = getInitialDestSize(overrideScale);
+}
+
+Vect<uint32_t> Texture::getInitialDestSize(const uint32_t overrideScale) const
+{
     if (overrideScale != 0)
-        destSize = srcSize * overrideScale;
-    else
-        destSize = srcSize * scale;
+        return srcSize * overrideScale;
+
+    return srcSize * scale;
 }
 
 void Texture::modColor(const std::vector<uint8_t>& color)

@@ -14,7 +14,8 @@ struct Vect
     Vect(T x, T y) : x(x), y(y) {}
     Vect(const nlohmann::json& jsonPair) : x(jsonPair[0].get<T>()), y(jsonPair[1].get<T>()) {}
 
-    void print() const { std::cout << "(" << x << ", " << y << ")" << std::endl; }
+    const std::string toString() const { return "(" + std::to_string(x) + ", " + std::to_string(y) + ")"; }
+    void print() const { std::cout << toString() << std::endl; }
     template <class U> const Vect<U> cast() const { return Vect<U>(static_cast<U>(x), static_cast<U>(y)); }
 
     Vect<T>& operator+=(const Vect<T>& other) { x += other.x; y += other.y; return *this; }

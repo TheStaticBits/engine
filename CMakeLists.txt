@@ -8,15 +8,15 @@ if (NOT DEFINED mode)
 
     if (FOLDER_NAME STREQUAL "release")
         set(CMAKE_BUILD_TYPE Release)
-    else()
+    else ()
         set(CMAKE_BUILD_TYPE Debug)
-    endif()
+    endif ()
 
-elseif(mode STREQUAL "debug")
+elseif (mode STREQUAL "debug")
     set(CMAKE_BUILD_TYPE Debug)
-elseif(mode STREQUAL "release")
+elseif (mode STREQUAL "release")
     set(CMAKE_BUILD_TYPE Release)
-endif()
+endif ()
 
 message("-- Build mode: ${CMAKE_BUILD_TYPE}")
 

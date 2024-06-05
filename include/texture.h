@@ -33,6 +33,8 @@ public:
     static const Vect<int32_t> getSize(SDL_Texture* texture);
     static const Vect<int32_t> getSize(Texture& texture);
 
+    Vect<uint32_t> getInitialDestSize(const uint32_t overrideScale=0) const;
+
     inline SDL_Texture* getTexture() const { return texture.get(); }
     inline const std::string& getPath() const { return path; }
     inline Vect<uint32_t>& getDestSize() { return destSize; }

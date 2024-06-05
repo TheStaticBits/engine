@@ -14,6 +14,7 @@ namespace util
     const bool initSDL(const uint32_t SDLFlags, const int IMGFlags);
     void quitSDL();
     const SDL_Color vecToColor(const std::vector<uint8_t>& color);
+    const std::vector<uint8_t> colorToVec(const SDL_Color& color);
     const nlohmann::json loadJson(const std::string& path);
     
     template <class T, class U>

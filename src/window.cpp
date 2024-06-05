@@ -31,7 +31,7 @@ Window::Window(const Vect<uint32_t>& size, const std::string& title, const bool 
     : window(nullptr), renderer(nullptr),
       closed(false), destroyed(false), size(size),
       deltaTime(0), lastFrame(SDL_GetTicks()), 
-      outputFPS(outputFPS), FPSCounter(0)
+      outputFPS(outputFPS), FPSCounter(0), prevDrawColor(clearColor)
 {
     createSDLWindow(title, vsync);
 }
@@ -82,7 +82,8 @@ void Window::setClearColor(const std::vector<uint8_t>& color)
 void Window::presentFrame()
 {
     SDL_RenderPresent(renderer);
-    SDL_RenderClear(renderer);
+
+    clear();
 
     // Calculate deltatime (time in seconds since last frame)
     uint64_t currentFrame = SDL_GetTicks64();
@@ -101,6 +102,11 @@ void Window::presentFrame()
     }
 
     lastFrame = currentFrame;
+}
+
+void Window::clear()
+{
+    SDL_RenderClear(renderer);
 }
 
 void Window::updateMouse()
@@ -218,11 +224,18 @@ void Window::render(Texture& texture)
     SDL_RenderCopy(renderer, texture.getTexture(), &srcRect, &dstRect);
 }
 
+void Window::render(Texture& texture, const float rotation)
+{
+    SDL_Rect srcRect = texture.getSourceRect();
+    SDL_Rect dstRect = texture.getDestRect();
+    SDL_RenderCopyEx(renderer, texture.getTexture(), &srcRect, &dstRect, rotation, nullptr, SDL_FLIP_NONE);
+}
+
 void Window::render(const SDL_Rect& rect, const std::vector<uint8_t>& color)
 {
     setDrawColor(color);
     SDL_RenderFillRect(renderer, &rect);
-    resetDrawColor();
+    resetToPrevDrawColor();
 }
 
 void Window::setDrawColor(const std::vector<uint8_t>& color)
@@ -233,6 +246,11 @@ void Window::setDrawColor(const std::vector<uint8_t>& color)
 void Window::resetDrawColor()
 {
     setDrawColor(clearColor);
+}
+
+void Window::resetToPrevDrawColor()
+{
+    setDrawColor(prevDrawColor);
 }
 
 void Window::setDrawTarget(Texture& texture)
@@ -250,6 +268,11 @@ SDL_Texture* Window::surfToTex(SDL_Surface* surface)
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_FreeSurface(surface);
     return texture;
+}
+
+SDL_Texture* Window::makeTex(const Vect<uint32_t>& size)
+{
+    return SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, size.x, size.y);
 }
 
 const bool Window::keyHeld(const SDL_Keycode& key)

@@ -44,25 +44,31 @@ public: // Public methods
 
     // Call once per frame per window
     void presentFrame(); // Displays changes to screen
+    void clear();
     
     [[nodiscard]] SDL_Texture* loadTexture(const std::string& path);
 
     // Draw methods
     void render(Texture& texture);
+    void render(Texture& texture, const float rotation);
     void render(const SDL_Rect& rect, const std::vector<uint8_t>& color);
 
+    inline void setPrevDrawColor(const std::vector<uint8_t>& color) { prevDrawColor = color; }
     void setDrawColor(const std::vector<uint8_t>& color);
     void resetDrawColor();
+    void resetToPrevDrawColor();
 
     void setDrawTarget(Texture& texture);
     void resetDrawTarget();
 
     // Other
     [[nodiscard]] SDL_Texture* surfToTex(SDL_Surface* surface);
+    [[nodiscard]] SDL_Texture* makeTex(const Vect<uint32_t>& size);
 
     // Getters
     inline const float getDeltaTime() const { return deltaTime; }
     inline const bool isClosed() const { return closed; }
+    inline const Vect<uint32_t> getSize() const { return size; }
 
     inline const uint32_t getID() const { return SDL_GetWindowID(window); };
     inline const bool isKeyFocused() const { return this == keyFocusedWindow; }
@@ -109,4 +115,6 @@ private: // Variables
     uint64_t lastFrame;
     const bool outputFPS;
     uint64_t FPSCounter;
+
+    std::vector<uint8_t> prevDrawColor;
 };

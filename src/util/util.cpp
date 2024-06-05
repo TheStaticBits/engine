@@ -26,7 +26,14 @@ void util::quitSDL()
 
 const SDL_Color util::vecToColor(const std::vector<uint8_t>& color)
 {
-    return { color[0], color[1], color[2], color[3] };
+    uint8_t fourth = ((color.size() >= 4) ? color[3] : 255);
+    return { color[0], color[1], color[2], fourth };
+}
+
+
+const std::vector<uint8_t> util::colorToVec(const SDL_Color& color)
+{
+    return { color.r, color.g, color.b, color.a };
 }
 
 const nlohmann::json util::loadJson(const std::string& path)
