@@ -18,6 +18,8 @@ struct Vect
     void print() const { std::cout << toString() << std::endl; }
     template <class U> const Vect<U> cast() const { return Vect<U>(static_cast<U>(x), static_cast<U>(y)); }
 
+    const float angle() const { return atan2(y, x); }
+
     Vect<T>& operator+=(const Vect<T>& other) { x += other.x; y += other.y; return *this; }
     Vect<T>& operator-=(const Vect<T>& other) { x -= other.x; y -= other.y; return *this; }
     Vect<T>& operator*=(const Vect<T>& other) { x *= other.x; y *= other.y; return *this; }

@@ -27,20 +27,25 @@ public:
 
     void modColor(const std::vector<uint8_t>& color);
 
+    void setBlendMode(const SDL_BlendMode mode);
+    void resetBlendMode();
+
     // Getters
     static inline const uint32_t getScale() { return scale; }
 
     static const Vect<int32_t> getSize(SDL_Texture* texture);
     static const Vect<int32_t> getSize(Texture& texture);
 
-    Vect<uint32_t> getInitialDestSize(const uint32_t overrideScale=0) const;
-
+    const Vect<uint32_t> getInitialDestSize(const uint32_t overrideScale=0) const;
+    
     inline SDL_Texture* getTexture() const { return texture.get(); }
     inline const std::string& getPath() const { return path; }
-    inline Vect<uint32_t>& getDestSize() { return destSize; }
-    inline Vect<uint32_t>& getSourceSize() { return srcSize; }
-    inline Vect<int32_t>& getDestPos() { return destPos; }
-    inline Vect<int32_t>& getSourcePos() { return srcPos; }
+
+    inline const Vect<uint32_t>& getInitialSrcSize() const { return initialSrcSize; }
+    inline const Vect<uint32_t>& getDestSize() const { return destSize; }
+    inline const Vect<uint32_t>& getSourceSize() const { return srcSize; }
+    inline const Vect<int32_t>& getDestPos() const { return destPos; }
+    inline const Vect<int32_t>& getSourcePos() const { return srcPos; }
 
     inline const SDL_Rect getDestRect() const { return util::vectToRect(destPos, destSize); }
     inline const SDL_Rect getSourceRect() const { return util::vectToRect(srcPos, srcSize); }
@@ -62,6 +67,7 @@ private:
     std::string path;
 
     Vect<int32_t> srcPos;
+    Vect<uint32_t> initialSrcSize;
     Vect<uint32_t> srcSize;
     Vect<int32_t> destPos;
     Vect<uint32_t> destSize;

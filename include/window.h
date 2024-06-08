@@ -54,12 +54,17 @@ public: // Public methods
     void render(const SDL_Rect& rect, const std::vector<uint8_t>& color);
 
     inline void setPrevDrawColor(const std::vector<uint8_t>& color) { prevDrawColor = color; }
+    inline void setDeltaTimeMultiplier(const float multiplier) { deltaTimeMultiplier = multiplier; }
     void setDrawColor(const std::vector<uint8_t>& color);
     void resetDrawColor();
     void resetToPrevDrawColor();
 
     void setDrawTarget(Texture& texture);
     void resetDrawTarget();
+
+    void setBlendMode(const SDL_BlendMode mode);
+    void resetBlendMode();
+    void getBlendMode();
 
     // Other
     [[nodiscard]] SDL_Texture* surfToTex(SDL_Surface* surface);
@@ -112,6 +117,7 @@ private: // Variables
     const Vect<uint32_t> size;
 
     float deltaTime;
+    float deltaTimeMultiplier = 1.0f;
     uint64_t lastFrame;
     const bool outputFPS;
     uint64_t FPSCounter;

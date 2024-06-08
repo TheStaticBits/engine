@@ -11,7 +11,7 @@
 void SDLTextureDeleter(SDL_Texture* texture)
 {
     SDL_DestroyTexture(texture);
-    logger::info("Destroyed instance of SDL_Texture");
+    // logger::info("Destroyed instance of SDL_Texture");
 }
 
 std::unordered_map<std::string, std::shared_ptr<SDL_Texture>> Texture::textures = {};
@@ -37,7 +37,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-    logger::info("Destroying instance of texture at " + path);
+    // logger::info("Destroying instance of texture at " + path);
 }
 
 const std::shared_ptr<SDL_Texture> Texture::getImage(Window& window, const std::string& path, const bool shared)
@@ -58,11 +58,12 @@ const std::shared_ptr<SDL_Texture> Texture::loadImage(Window& window, const std:
 
 void Texture::initSizes(const uint32_t overrideScale)
 {
-    srcSize = Texture::getSize(texture.get()).cast<uint32_t>();
+    initialSrcSize = Texture::getSize(texture.get()).cast<uint32_t>();
+    srcSize = initialSrcSize;
     destSize = getInitialDestSize(overrideScale);
 }
 
-Vect<uint32_t> Texture::getInitialDestSize(const uint32_t overrideScale) const
+const Vect<uint32_t> Texture::getInitialDestSize(const uint32_t overrideScale) const
 {
     if (overrideScale != 0)
         return srcSize * overrideScale;
@@ -74,6 +75,18 @@ void Texture::modColor(const std::vector<uint8_t>& color)
 {
     if (SDL_SetTextureColorMod(texture.get(), color[0], color[1], color[2]) != 0)
         logger::error("Failed to set texture color mod");
+}
+
+
+void Texture::setBlendMode(const SDL_BlendMode mode)
+{
+    if (SDL_SetTextureBlendMode(texture.get(), mode) == -1)
+        logger::SDLError("Failed to set texture blend mode");
+}
+
+void Texture::resetBlendMode()
+{
+    setBlendMode(SDL_BLENDMODE_NONE);
 }
 
 const Vect<int32_t> Texture::getSize(SDL_Texture* texture)

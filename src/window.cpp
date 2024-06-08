@@ -88,6 +88,7 @@ void Window::presentFrame()
     // Calculate deltatime (time in seconds since last frame)
     uint64_t currentFrame = SDL_GetTicks64();
     deltaTime = (currentFrame - lastFrame) / 1000.0f;
+    deltaTime *= deltaTimeMultiplier;
 
     if (outputFPS)
     {
@@ -261,6 +262,26 @@ void Window::setDrawTarget(Texture& texture)
 void Window::resetDrawTarget()
 {
     SDL_SetRenderTarget(renderer, nullptr);
+}
+
+void Window::setBlendMode(const SDL_BlendMode mode)
+{
+    if (SDL_SetRenderDrawBlendMode(renderer, mode) != 0) {
+        logger::SDLError("Blend mode not supported");
+    }
+}
+
+void Window::resetBlendMode()
+{
+    setBlendMode(SDL_BLENDMODE_NONE);
+}
+
+void Window::getBlendMode()
+{
+    SDL_BlendMode mode;
+    if (SDL_GetRenderDrawBlendMode(renderer, &mode) != 0) {
+        logger::SDLError("Failed to get blend mode");
+    }
 }
 
 SDL_Texture* Window::surfToTex(SDL_Surface* surface)
