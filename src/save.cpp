@@ -30,9 +30,10 @@ EM_ASYNC_JS(char*, callFetchSaveData, (), {
 
 EM_JS(void, callUpdateSaveData, (const char* data), {
     const stringData = UTF8ToString(data);
-    _free(data);
 
-    window.updateSaveData(stringData);
+    if (typeof(window.updateSaveData) === "function") {
+        window.updateSaveData(stringData);
+    }
 });
 
 EM_JS(void, callSaveNewHighscore, (const int32_t score), {
@@ -85,8 +86,10 @@ void Save::updateSaveData(const std::string savePath, const nlohmann::json& data
     file << data.dump();
     file.close();
 #else
-    if (testOnOfStatic())
-        callUpdateSaveData(data.dump().c_str());
+    if (testOnOfStatic()){
+        std::string stringData = data.dump();
+        callUpdateSaveData(stringData.c_str());
+    }
 #endif
 }
 
