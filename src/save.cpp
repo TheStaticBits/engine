@@ -11,7 +11,6 @@
 
 // Tests if currently runnning on ofstatic.com
 EM_JS(bool, testOnOfStatic, (), {
-    console.log("Testing if on ofstatic.com");
     console.log(typeof(window.fetchSaveData));
     return typeof(window.fetchSaveData) === "function";
 })
@@ -36,8 +35,8 @@ EM_JS(void, callUpdateSaveData, (const char* data), {
     }
 });
 
-EM_JS(void, callSaveNewHighscore, (const int32_t score), {
-    window.saveNewHighscore(score);
+EM_JS(void, callSaveHighscore, (const int32_t score), {
+    window.saveHighscore(score);
 });
 
 #endif
@@ -97,6 +96,6 @@ void Save::saveNewHighscore(const int32_t score)
 {
 #ifdef __EMSCRIPTEN__
     if (testOnOfStatic())
-        callSaveNewHighscore(score);
+        callSaveHighscore(score);
 #endif
 }

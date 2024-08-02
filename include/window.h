@@ -121,6 +121,7 @@ private: // Variables
     uint64_t lastFrame;
     const bool outputFPS;
     uint64_t FPSCounter;
+    float frameTimer;
 
     std::vector<uint8_t> prevDrawColor;
 };

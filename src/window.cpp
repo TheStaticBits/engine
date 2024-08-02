@@ -88,20 +88,22 @@ void Window::presentFrame()
     // Calculate deltatime (time in seconds since last frame)
     uint64_t currentFrame = SDL_GetTicks64();
     deltaTime = (currentFrame - lastFrame) / 1000.0f;
-    deltaTime *= deltaTimeMultiplier;
 
     if (outputFPS)
     {
+        frameTimer += deltaTime;
         FPSCounter++;
 
-        // Every second this happens once, print out FPS every second
-        if ((currentFrame % 1000) < (lastFrame % 1000))
+        // Print out FPS every second
+        if (frameTimer >= 1)
         {
+            frameTimer = 0;
             logger::info("FPS: " + std::to_string(FPSCounter));
             FPSCounter = 0;
         }
     }
 
+    deltaTime *= deltaTimeMultiplier;
     lastFrame = currentFrame;
 }
 
